@@ -1,239 +1,274 @@
 <!doctype html>
 <html lang="vi">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>FC Mobile OVR Calculator</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>FC Mobile OVR Calculator – VNS L-Dragon</title>
 <style>
 :root{--bg:#0d0f15;--panel:#131720;--panel2:#0f1320;--line:#2a3040;--gold:#f6c344;--gold2:#7a6010;--text:#eef2f7;--muted:#9aa4b2;--blue:#56b7ff;--green:#4dd38a;--red:#ff7272;--purple:#b07aff;--orange:#ff9940;--accent:#3a5080;--wm:#ffd86b}
-*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#07090d 0%,#0d0f15 100%);color:var(--text)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#07090d 0%,#0d0f15 100%);color:var(--text)}
 .wrap{max-width:1200px;margin:0 auto;padding:14px}
 .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 35px rgba(0,0,0,.35);overflow:hidden}
-.header{padding:14px 16px 8px;border-bottom:1px solid var(--line);position:relative}
-.title{font-size:clamp(22px,3vw,34px);font-weight:800;color:var(--gold);letter-spacing:.2px}
-.sub{margin-top:6px;color:var(--muted);font-size:13px}
-.wm{position:absolute;right:16px;top:16px;color:var(--wm);font-size:13px;font-weight:800;opacity:.95;text-shadow:0 0 14px rgba(255,216,107,.65)}
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;padding:14px}
-.section{grid-column:1/-1;background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.section h2{margin:0;padding:10px 12px;background:#111623;border-bottom:1px solid var(--line);font-size:14px;color:var(--gold)}
-.table{width:100%;border-collapse:collapse}
-.table th,.table td{border-bottom:1px solid var(--line);padding:9px 8px;font-size:13px;text-align:center;vertical-align:middle}
-.table th{background:#161b2a;color:var(--gold);font-size:12px;white-space:nowrap}
-.table td.name{text-align:left;font-weight:700}
-.table td.note{text-align:left;color:var(--muted);font-size:12px}
-input,select,button{font:inherit}
-input[type=text],input[type=number],select{width:100%;background:#0f1520;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 10px;outline:none}
+.header{padding:14px 16px 10px;border-bottom:2px solid var(--gold2);position:relative;display:flex;align-items:center;gap:10px}
+.title{font-size:clamp(20px,3vw,32px);font-weight:900;color:var(--gold);letter-spacing:.2px}
+.sub{margin-top:4px;color:var(--muted);font-size:12px}
+.wm{margin-left:auto;padding:6px 14px;border:1.5px solid var(--gold2);border-radius:999px;color:var(--wm);font-size:12px;font-weight:900;letter-spacing:.5px;text-shadow:0 0 12px rgba(255,216,107,.6);white-space:nowrap;background:rgba(255,216,107,.07)}
+.grid{display:flex;flex-direction:column;gap:10px;padding:14px}
+.section{background:rgba(255,255,255,.018);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.section h2{margin:0;padding:9px 14px;background:#111623;border-bottom:1px solid var(--line);font-size:13px;font-weight:800;color:var(--gold);display:flex;align-items:center;gap:8px}
+.badge{padding:3px 9px;border-radius:999px;background:#0d1a30;border:1px solid var(--accent);color:var(--blue);font-size:11px;font-weight:700}
+.badge.green{background:#0a1f12;border-color:#2a6040;color:var(--green)}
+.table-wrap{overflow-x:auto}
+.table{width:100%;border-collapse:collapse;min-width:540px}
+.table th,.table td{border-bottom:1px solid rgba(42,48,64,.6);padding:8px 7px;font-size:13px;text-align:center;vertical-align:middle}
+.table th{background:#141a28;color:var(--gold);font-size:11.5px;font-weight:700;white-space:nowrap}
+.table tr:nth-child(even) td{background:rgba(255,255,255,.014)}
+.table td.left{text-align:left;font-weight:700}
+.table td.note{text-align:left;color:var(--muted);font-size:11px;font-style:italic;min-width:160px}
+.table td.ovr{font-weight:900;font-size:14px;color:var(--blue)}
+.idx{color:var(--muted);font-size:11px;width:26px}
+input,select,button{font:inherit;outline:none}
+input[type=text],input[type=number],select{width:100%;background:#0f1520;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:7px 9px;transition:.15s}
 input[type=number]{text-align:center}
 input:focus,select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(246,195,68,.12)}
-.btns{display:flex;flex-wrap:wrap;gap:8px;padding:12px;border-top:1px solid var(--line);background:#101521}
-button{border:0;border-radius:10px;padding:10px 12px;font-weight:800;cursor:pointer;transition:.15s transform,.15s opacity}
-button:hover{transform:translateY(-1px)}
-.primary{background:var(--gold);color:#171207}.ghost{background:#1a2030;color:var(--text);border:1px solid var(--line)}.danger{background:#3a1720;color:#ffd6d6;border:1px solid #5d2432}
-.value{font-weight:800;color:var(--gold);font-size:14px}
-.value.green{color:var(--green)}
-.small{font-size:12px;color:var(--muted)}
-.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px;border-top:1px solid var(--line);background:#0f1320}
-.box{background:#111725;border:1px solid var(--line);border-radius:14px;padding:12px}
-.box .label{font-size:12px;color:var(--muted)}
-.box .num{margin-top:6px;font-size:30px;font-weight:900;color:var(--gold)}
-.box .num.green{color:var(--green)}
-.help{padding:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.5}
-.reservehead{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;background:#0f1a2a;border-bottom:1px solid var(--line)}
-.tag{padding:5px 9px;border-radius:999px;background:#182338;color:var(--blue);font-size:12px;font-weight:800}
-@media (max-width:900px){.summary{grid-template-columns:repeat(2,1fr)} .wm{position:static;display:inline-block;margin-top:8px}}
-@media (max-width:720px){.grid{padding:10px}.table th,.table td{padding:8px 6px;font-size:12px}.summary{grid-template-columns:1fr}}
+input::placeholder{color:var(--muted);opacity:.55}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px;border-top:1px solid var(--line);background:#0a0d15}
+.box{background:#111725;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+.box .lbl{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.3px;text-transform:uppercase}
+.box .num{font-size:34px;font-weight:900;color:var(--gold);line-height:1.1;margin:5px 0 3px;text-shadow:0 0 18px rgba(246,195,68,.38)}
+.box .num.green{color:var(--green);text-shadow:0 0 18px rgba(77,211,138,.3)}
+.box .sm{font-size:11px;color:var(--muted)}
+.box.total{border-color:var(--gold2);box-shadow:0 0 18px rgba(246,195,68,.1)}
+.notice{margin:0 0 10px;padding:9px 14px;background:#0d1a0f;border:1px solid #2a6040;border-radius:12px;color:var(--green);font-size:12px;line-height:1.6}
+.btns{display:flex;flex-wrap:wrap;gap:8px;padding:12px;border-top:1px solid var(--line);background:#0a0d15}
+button{border:0;border-radius:11px;padding:10px 14px;font-weight:800;font-size:13px;cursor:pointer;transition:.15s transform}
+button:hover{transform:translateY(-2px)}
+button:active{transform:translateY(0)}
+.b-save{background:linear-gradient(135deg,#e6b030,#f6c344);color:#171207;box-shadow:0 4px 14px rgba(246,195,68,.28)}
+.b-ghost{background:#1a2030;color:var(--text);border:1px solid var(--line)}
+.b-danger{background:#3a1720;color:#ffd6d6;border:1px solid #5d2432}
+.help{padding:0 14px 12px;color:var(--muted);font-size:12px;line-height:1.6;background:#0a0d15}
+.help b{color:var(--blue)}
+@media(max-width:860px){.summary{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:540px){.wrap{padding:10px}.summary{grid-template-columns:1fr 1fr}.box .num{font-size:26px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="card">
-    <div class="header">
-      <div class="title">FC Mobile OVR Calculator</div>
-      <div class="sub">1 file HTML duy nhất · lưu trên thiết bị · xuất/nhập JSON · dùng chung trên hosting tĩnh</div>
-      <div class="wm">VNS - L-Dragon</div>
+<div class="card">
+
+  <div class="header">
+    <div>
+      <div class="title">⚽ FC Mobile OVR Calculator</div>
+      <div class="sub">11 cầu thủ chính + 7 dự bị · Ghi chú tự động · Lưu trên thiết bị</div>
+    </div>
+    <div class="wm">VNS - L-Dragon</div>
+  </div>
+
+  <div class="grid">
+
+    <div class="section">
+      <h2>▶ ĐỘI HÌNH CHÍNH <span class="badge">11 cầu thủ</span></h2>
+      <div class="table-wrap"><table class="table" id="mainTbl">
+        <thead><tr><th>#</th><th>Tên cầu thủ</th><th>Vị trí</th><th>Base OVR</th><th>+ Rank</th><th>OVR Thực</th><th>Ghi chú</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
     </div>
 
-    <div class="grid">
-      <div class="section">
-        <h2>Đội hình chính (11 cầu thủ)</h2>
-        <table class="table" id="mainTable">
-          <thead>
-            <tr><th>#</th><th>Tên cầu thủ</th><th>Vị trí</th><th>Base OVR</th><th>+ Rank</th><th>OVR Thực</th><th>Ghi chú</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+    <div class="section">
+      <h2>▶ CẦU THỦ DỰ BỊ <span class="badge">7 ô</span><span class="badge green">Ô trống không ảnh hưởng OVR</span></h2>
+      <div class="table-wrap"><table class="table" id="resTbl">
+        <thead><tr><th>#</th><th>Tên cầu thủ</th><th>Vị trí</th><th>Base OVR</th><th>+ Rank</th><th>OVR Thực</th><th>Ghi chú</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </div>
 
-      <div class="section">
-        <div class="reservehead">
-          <h2 style="padding:0;background:transparent;border:0">Cầu thủ dự bị (7 ô)</h2>
-          <span class="tag">Ô trống sẽ không ảnh hưởng OVR</span>
-        </div>
-        <table class="table" id="reserveTable">
-          <thead>
-            <tr><th>#</th><th>Tên cầu thủ</th><th>Vị trí</th><th>Base OVR</th><th>+ Rank</th><th>OVR Thực</th><th>Ghi chú</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+    <div class="section">
+      <h2>🏅 HUY HIỆU ĐỘI BÓNG <span class="badge green">Max Level = +1 OVR mỗi huy hiệu</span></h2>
+      <div class="table-wrap"><table class="table" id="badgeTbl">
+        <thead><tr><th>#</th><th>Tên huy hiệu</th><th>Max Level?</th><th>Bonus OVR</th><th>Ghi chú</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </div>
 
-      <div class="section">
-        <h2>Huy hiệu đội bóng</h2>
-        <table class="table" id="badgeTable">
-          <thead>
-            <tr><th>#</th><th>Tên huy hiệu</th><th>Max Level?</th><th>Bonus OVR</th><th>Ghi chú</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+    <div class="notice">✅ Dữ liệu tự động lưu ngay khi bạn nhập. Mỗi người mở web sẽ có dữ liệu riêng trên thiết bị của họ.</div>
 
-      <div class="summary">
-        <div class="box"><div class="label">OVR cơ bản</div><div class="num" id="baseOvr">0</div><div class="small">Top 7 mạnh nhất của 18 ô</div></div>
-        <div class="box"><div class="label">Bonus huy hiệu</div><div class="num green" id="badgeBonus">0</div><div class="small">Mỗi huy hiệu Max Level = +1</div></div>
-        <div class="box"><div class="label">OVR tổng</div><div class="num" id="totalOvr">0</div><div class="small">OVR cơ bản + bonus</div></div>
-        <div class="box"><div class="label">Top 7 hiện tại</div><div class="small" id="top7List">-</div></div>
-      </div>
+  </div><!-- /.grid -->
 
-      <div class="section">
-        <div class="btns">
-          <button class="primary" id="saveBtn">Lưu dữ liệu</button>
-          <button class="ghost" id="loadBtn">Khôi phục dữ liệu</button>
-          <button class="ghost" id="exportBtn">Xuất JSON</button>
-          <button class="ghost" id="importBtn">Nhập JSON</button>
-          <button class="danger" id="resetBtn">Reset</button>
-          <input type="file" id="fileInput" accept="application/json" style="display:none" />
-        </div>
-        <div class="help">
-          Dữ liệu được lưu bằng <b>localStorage</b> trên thiết bị, nên mỗi người mở web sẽ có dữ liệu riêng. Nếu muốn chuyển qua máy khác, dùng <b>Xuất JSON</b> rồi <b>Nhập JSON</b> lại.
-        </div>
-      </div>
+  <div class="summary">
+    <div class="box">
+      <div class="lbl">OVR Cơ Bản</div>
+      <div class="num" id="sBase">—</div>
+      <div class="sm">Top 7 mạnh nhất / 18 ô</div>
+    </div>
+    <div class="box">
+      <div class="lbl">Bonus Huy Hiệu</div>
+      <div class="num green" id="sBonus">0</div>
+      <div class="sm">Mỗi Max Level = +1</div>
+    </div>
+    <div class="box total">
+      <div class="lbl">⭐ OVR Tổng</div>
+      <div class="num" id="sTotal">—</div>
+      <div class="sm" id="sFormula">cơ bản + bonus</div>
+    </div>
+    <div class="box">
+      <div class="lbl">Top 7 hiện tại</div>
+      <div class="sm" id="sTop7" style="color:var(--text);font-size:13px;font-weight:700;margin-top:8px;line-height:1.8">—</div>
     </div>
   </div>
-</div>
+
+  <div class="btns">
+    <button class="b-save" id="btnSave">💾 Lưu dữ liệu</button>
+    <button class="b-ghost" id="btnLoad">🔄 Khôi phục</button>
+    <button class="b-ghost" id="btnExport">📤 Xuất JSON</button>
+    <button class="b-ghost" id="btnImport">📥 Nhập JSON</button>
+    <button class="b-danger" id="btnReset">🗑 Reset</button>
+    <input type="file" id="fileInput" accept="application/json" style="display:none"/>
+  </div>
+  <div class="help"><b>Lưu</b>: lưu trên trình duyệt. <b>Xuất JSON</b>: tải file sao lưu. <b>Nhập JSON</b>: khôi phục từ file sao lưu. <b>Reset</b>: về dữ liệu mặc định.</div>
+
+</div><!-- /.card -->
+</div><!-- /.wrap -->
 
 <script>
-const posOptions = ['GK','LB','CB','RB','CDM','CM','CAM','LW','RW','ST'];
-const mainDefaults = [
-  ['Donnarumma','GK',116,5],['Ze Roberto','LB',119,5],['Barzagli','CB',118,5],['Maldini','CB',117,5],['Mourino','RB',117,5],
-  ['Rice','CDM',119,5],['Modric','CM',119,5],['Govou','LW',117,5],['Dembele','ST',119,5],['Van Basten','ST',120,5],['Kvaratskhelia','RW',119,5]
+const POS=['GK','LB','CB','RB','CDM','CM','CAM','LW','RW','ST'];
+const MDEF=[
+  ['Donnarumma','GK',116,5],['Ze Roberto','LB',119,5],['Barzagli','CB',118,5],
+  ['Maldini','CB',117,5],['Mourino','RB',117,5],['Rice','CDM',119,5],
+  ['Modric','CM',119,5],['Govou','LW',117,5],['Dembele','ST',119,5],
+  ['Van Basten','ST',120,5],['Kvaratskhelia','RW',119,5]
 ];
-const reserveDefaults = [['','','',''],['','','',''],['','','',''],['','','',''],['','','',''],['','','',''],['','','','']];
-const badgeDefaults = [['FC Badge','Không'],['TOTS','Có'],['UCL','Không']];
-const posColors = {GK:'#4dd38a',CB:'#56b7ff',CDM:'#56b7ff',LB:'#56b7ff',RB:'#56b7ff',CM:'#b07aff,CAM:#b07aff',LW:'#ff7272',RW:'#ff7272',ST:'#ff7272'};
-const weights = {GK:3,CB:2,CDM:2,LB:1.5,RB:1.5,CM:1.5,CAM:1.5,LW:1,RW:1,ST:1};
+const RDEF=Array(7).fill(0).map(()=>['','','','']);
+const BDEF=[['FC Badge','Không'],['TOTS','Có'],['UCL','Không']];
+const KEY='fcmovr_v3';
 
-const mainBody = document.querySelector('#mainTable tbody');
-const reserveBody = document.querySelector('#reserveTable tbody');
-const badgeBody = document.querySelector('#badgeTable tbody');
+const gid=id=>document.getElementById(id);
+const qs=s=>document.querySelector(s);
+const posOpts=(val,blank)=>(blank?[''].concat(POS):POS).map(p=>`<option value="${p}"${p===val?' selected':''}>${p||'—'}</option>`).join('');
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const gv=k=>{const e=qs(`[data-k="${k}"]`);return e?e.value:''};
+const gn=k=>{const v=gv(k);return v===''?null:+v};
+const sv=(k,v)=>{const e=qs(`[data-k="${k}"]`);if(e)e.value=v??''};
+const sout=(k,v)=>{const e=qs(`[data-out="${k}"]`);if(e)e.textContent=v??''};
 
-function makeMainRow(i, d){
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td>${i+1}</td>
-    <td class="name"><input type="text" value="${d[0]||''}" data-k="main_name_${i}"></td>
-    <td><select data-k="main_pos_${i}">${posOptions.map(p=>`<option value="${p}" ${p===d[1]?'selected':''}>${p}</option>`).join('')}</select></td>
-    <td><input type="number" min="0" max="200" value="${d[2]??''}" data-k="main_base_${i}"></td>
-    <td><input type="number" min="0" max="5" value="${d[3]??''}" data-k="main_rank_${i}"></td>
-    <td class="value" data-out="main_ovr_${i}"></td>
-    <td class="note" data-out="main_note_${i}"></td>`;
-  return tr;
+function buildMain(){
+  const s=load();
+  const tb=qs('#mainTbl tbody');tb.innerHTML='';
+  MDEF.forEach((_,i)=>{
+    const d=s.main?.[i]||MDEF[i];
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="idx">${i+1}</td>
+      <td class="left"><input type="text" value="${esc(d[0]||'')}" data-k="mn${i}" placeholder="Tên cầu thủ"></td>
+      <td><select data-k="mp${i}">${posOpts(d[1]||POS[0],false)}</select></td>
+      <td><input type="number" min="0" max="200" value="${d[2]??''}" data-k="mb${i}" placeholder="—"></td>
+      <td><input type="number" min="0" max="5" value="${d[3]??''}" data-k="mr${i}" placeholder="—"></td>
+      <td class="ovr" data-out="mo${i}"></td>
+      <td class="note" data-out="mn${i}n"></td>`;
+    tb.appendChild(tr);
+  });
 }
-function makeReserveRow(i, d){
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td>${i+1}</td>
-    <td class="name"><input type="text" value="${d[0]||''}" placeholder="Trống" data-k="res_name_${i}"></td>
-    <td><select data-k="res_pos_${i}">${['','GK','LB','CB','RB','CDM','CM','CAM','LW','RW','ST'].map(p=>`<option value="${p}" ${p===d[1]?'selected':''}>${p||'—'}</option>`).join('')}</select></td>
-    <td><input type="number" min="0" max="200" value="${d[2]??''}" data-k="res_base_${i}"></td>
-    <td><input type="number" min="0" max="5" value="${d[3]??''}" data-k="res_rank_${i}"></td>
-    <td class="value" data-out="res_ovr_${i}"></td>
-    <td class="note" data-out="res_note_${i}"></td>`;
-  return tr;
+function buildRes(){
+  const s=load();
+  const tb=qs('#resTbl tbody');tb.innerHTML='';
+  for(let i=0;i<7;i++){
+    const d=s.reserve?.[i]||RDEF[i];
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="idx">${i+1}</td>
+      <td class="left"><input type="text" value="${esc(d[0]||'')}" data-k="rn${i}" placeholder="Trống"></td>
+      <td><select data-k="rp${i}">${posOpts(d[1]||'',true)}</select></td>
+      <td><input type="number" min="0" max="200" value="${d[2]??''}" data-k="rb${i}" placeholder="—"></td>
+      <td><input type="number" min="0" max="5" value="${d[3]??''}" data-k="rr${i}" placeholder="—"></td>
+      <td class="ovr" data-out="ro${i}"></td>
+      <td class="note" data-out="rn${i}n"></td>`;
+    tb.appendChild(tr);
+  }
 }
-function makeBadgeRow(i, d){
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td>${i+1}</td>
-    <td class="name">${d[0]}</td>
-    <td><select data-k="badge_max_${i}"><option value="Không" ${d[1]==='Không'?'selected':''}>Không</option><option value="Có" ${d[1]==='Có'?'selected':''}>Có</option></select></td>
-    <td class="value" data-out="badge_bonus_${i}"></td>
-    <td class="note">${d[0]}: +1 nếu Max Level</td>`;
-  return tr;
-}
-
-mainDefaults.forEach((d,i)=>mainBody.appendChild(makeMainRow(i,d)));
-reserveDefaults.forEach((d,i)=>reserveBody.appendChild(makeReserveRow(i,d)));
-badgeDefaults.forEach((d,i)=>badgeBody.appendChild(makeBadgeRow(i,d)));
-
-function getState(){
-  const state = {main:[], reserve:[], badges:[]};
-  for(let i=0;i<11;i++) state.main.push({name:get(`main_name_${i}`), pos:get(`main_pos_${i}`), base:num(`main_base_${i}`), rank:num(`main_rank_${i}`)});
-  for(let i=0;i<7;i++) state.reserve.push({name:get(`res_name_${i}`), pos:get(`res_pos_${i}`), base:num(`res_base_${i}`), rank:num(`res_rank_${i}`)});
-  for(let i=0;i<3;i++) state.badges.push({max:get(`badge_max_${i}`)});
-  return state;
-}
-function setState(state){
-  state.main?.forEach((d,i)=>{set(`main_name_${i}`,d.name); set(`main_pos_${i}`,d.pos); set(`main_base_${i}`,d.base); set(`main_rank_${i}`,d.rank)});
-  state.reserve?.forEach((d,i)=>{set(`res_name_${i}`,d.name); set(`res_pos_${i}`,d.pos); set(`res_base_${i}`,d.base); set(`res_rank_${i}`,d.rank)});
-  state.badges?.forEach((d,i)=>set(`badge_max_${i}`,d.max));
-  render();
-}
-function get(k){ const el=document.querySelector(`[data-k="${k}"]`); return el?el.value:''; }
-function set(k,v){ const el=document.querySelector(`[data-k="${k}"]`); if(el!==null) el.value = (v ?? ''); }
-function num(k){ const v=get(k); return v===''?null:Number(v); }
-function note(name, base, rank, ovr){
-  if(!name && (base===null || base==='') && (rank===null || rank==='')) return 'Chưa nhập dữ liệu';
-  if(name==='' && base===null && rank===null) return 'Chưa nhập dữ liệu';
-  const b = base ?? 0, r = rank ?? 0;
-  const n = name || '—';
-  return `${n} | ${b} + ${r} = ${ovr}`;
+function buildBadge(){
+  const s=load();
+  const tb=qs('#badgeTbl tbody');tb.innerHTML='';
+  BDEF.forEach(([name],i)=>{
+    const d=s.badges?.[i]||BDEF[i];
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="idx">${i+1}</td>
+      <td class="left"><input type="text" value="${esc(d[0]||name)}" data-k="bn${i}" placeholder="Tên huy hiệu"></td>
+      <td><select data-k="bm${i}">
+        <option value="Không"${d[1]==='Không'?' selected':''}>Không</option>
+        <option value="Có"${d[1]==='Có'?' selected':''}>Có</option>
+      </select></td>
+      <td class="ovr" style="color:var(--green)" data-out="bo${i}"></td>
+      <td class="note" data-out="bdnote${i}">${esc(d[0]||name)} Max Level → +1 OVR</td>`;
+    tb.appendChild(tr);
+  });
 }
 function render(){
-  const values=[];
-  document.querySelectorAll('[data-out]').forEach(el=>el.textContent='');
+  const vals=[];
+  // Main
   for(let i=0;i<11;i++){
-    const name=get(`main_name_${i}`), pos=get(`main_pos_${i}`), base=num(`main_base_${i}`), rank=num(`main_rank_${i}`);
-    const ovr = (base===null || rank===null) ? null : base + rank;
-    const out = document.querySelector(`[data-out="main_ovr_${i}"]`); if(out) out.textContent = ovr===null?'':ovr;
-    const noteEl = document.querySelector(`[data-out="main_note_${i}"]`); if(noteEl) noteEl.textContent = note(name, base, rank, ovr===null?'':ovr);
-    if(ovr!==null) values.push(ovr);
+    const b=gn(`mb${i}`),r=gn(`mr${i}`);
+    const ovr=(b!==null&&r!==null)?b+r:null;
+    sout(`mo${i}`,ovr!==null?ovr:'');
+    const name=gv(`mn${i}`);
+    sout(`mn${i}n`,ovr!==null?`${name||'—'} | ${b} + ${r} = ${ovr}`:'Chưa nhập đủ');
+    if(ovr!==null)vals.push(ovr);
   }
+  // Reserve
   for(let i=0;i<7;i++){
-    const name=get(`res_name_${i}`), pos=get(`res_pos_${i}`), base=num(`res_base_${i}`), rank=num(`res_rank_${i}`);
-    const hasData = (name||'').trim()!=='' || base!==null || rank!==null || (pos||'')!=='';
-    const ovr = (base===null || rank===null) ? null : base + rank;
-    const out = document.querySelector(`[data-out="res_ovr_${i}"]`); if(out) out.textContent = ovr===null?'':ovr;
-    const noteEl = document.querySelector(`[data-out="res_note_${i}"]`); if(noteEl) noteEl.textContent = hasData ? note(name||'— Trống —', base, rank, ovr===null?'':ovr) : 'Chưa nhập dữ liệu';
-    if(ovr!==null) values.push(ovr);
+    const b=gn(`rb${i}`),r=gn(`rr${i}`);
+    const name=gv(`rn${i}`),pos=gv(`rp${i}`);
+    const hasData=name.trim()!==''||b!==null||r!==null||pos!=='';
+    const ovr=(b!==null&&r!==null)?b+r:null;
+    sout(`ro${i}`,ovr!==null?ovr:'');
+    if(hasData&&ovr!==null)sout(`rn${i}n`,`${name||'— Trống —'} | ${b} + ${r} = ${ovr}`);
+    else if(hasData)sout(`rn${i}n`,'Nhập Base OVR và Rank để tính');
+    else sout(`rn${i}n`,'Chưa nhập dữ liệu');
+    if(ovr!==null)vals.push(ovr);
   }
-  values.sort((a,b)=>b-a);
-  const top7 = values.slice(0,7);
-  const baseOvr = top7.length ? Math.floor(top7.reduce((s,v)=>s+v,0)/top7.length) : 0;
-  const badgeBonus = [...Array(3).keys()].reduce((s,i)=>s + (get(`badge_max_${i}`)==='Có' ? 1 : 0),0);
-  const total = baseOvr + badgeBonus;
-  document.getElementById('baseOvr').textContent = baseOvr;
-  document.getElementById('badgeBonus').textContent = badgeBonus;
-  document.getElementById('totalOvr').textContent = total;
-  document.getElementById('top7List').textContent = top7.length ? top7.join(', ') : '-';
-  for(let i=0;i<3;i++){
-    const el=document.querySelector(`[data-out="badge_bonus_${i}"]`); if(el) el.textContent = get(`badge_max_${i}`)==='Có' ? 1 : 0;
-  }
+  // Badges
+  let bonus=0;
+  for(let i=0;i<3;i++){const v=gv(`bm${i}`)==='Có'?1:0;sout(`bo${i}`,v);const n=gv(`bn${i}`)||BDEF[i][0];const note=qs(`[data-out=\"bdnote${i}\"]`); if(note) note.textContent=n+' Max Level → +1 OVR'; bonus+=v;}
+  // Summary
+  vals.sort((a,b)=>b-a);
+  const top7=vals.slice(0,7);
+  const base=top7.length?Math.floor(top7.reduce((s,v)=>s+v,0)/top7.length):null;
+  gid('sBase').textContent=base!==null?base:'—';
+  gid('sBonus').textContent=bonus;
+  gid('sTotal').textContent=base!==null?base+bonus:'—';
+  gid('sFormula').textContent=base!==null?`${base} + ${bonus} bonus`:'nhập dữ liệu để tính';
+  gid('sTop7').textContent=top7.length?top7.join(', '):'—';
 }
-function save(){ localStorage.setItem('fcmobile_ovr_v1', JSON.stringify(getState())); }
-function load(){ const raw=localStorage.getItem('fcmobile_ovr_v1'); if(raw){ try{ setState(JSON.parse(raw)); }catch(e){} } }
-function reset(){ localStorage.removeItem('fcmobile_ovr_v1'); location.reload(); }
-function exportJson(){ const blob = new Blob([JSON.stringify(getState(), null, 2)], {type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='fc-mobile-ovr-data.json'; a.click(); URL.revokeObjectURL(a.href); }
-function importJson(){ document.getElementById('fileInput').click(); }
-function applyImport(file){ const r=new FileReader(); r.onload=()=>{ try{ setState(JSON.parse(r.result)); save(); }catch(e){ alert('JSON không hợp lệ'); } }; r.readAsText(file); }
 
-document.addEventListener('input', e=>{ if(e.target.matches('input,select')){ render(); save(); } });
-document.getElementById('saveBtn').onclick=()=>{ save(); alert('Đã lưu trên thiết bị'); };
-document.getElementById('loadBtn').onclick=()=>{ load(); render(); };
-document.getElementById('exportBtn').onclick=exportJson;
-document.getElementById('importBtn').onclick=importJson;
-document.getElementById('resetBtn').onclick=reset;
-document.getElementById('fileInput').addEventListener('change', e=>{ if(e.target.files[0]) applyImport(e.target.files[0]); e.target.value=''; });
-load(); render();
+function getState(){
+  const s={main:[],reserve:[],badges:[]};
+  for(let i=0;i<11;i++)s.main.push([gv(`mn${i}`),gv(`mp${i}`),gn(`mb${i}`)??'',gn(`mr${i}`)??'']);
+  for(let i=0;i<7;i++)s.reserve.push([gv(`rn${i}`),gv(`rp${i}`),gn(`rb${i}`)??'',gn(`rr${i}`)??'']);
+  for(let i=0;i<3;i++)s.badges.push([gv(`bn${i}`)||BDEF[i][0],gv(`bm${i}`)]);
+  return s;
+}
+function load(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):{}}catch(e){return{}}}
+function save(){localStorage.setItem(KEY,JSON.stringify(getState()));}
+function apply(state){localStorage.setItem(KEY,JSON.stringify(state));buildMain();buildRes();buildBadge();render();}
+
+document.addEventListener('input',e=>{if(e.target.matches('input,select')){render();save();}});
+gid('btnSave').onclick=()=>{save();const b=gid('btnSave');const t=b.textContent;b.textContent='✅ Đã lưu!';setTimeout(()=>b.textContent=t,1500);};
+gid('btnLoad').onclick=()=>{buildMain();buildRes();buildBadge();render();};
+gid('btnExport').onclick=()=>{
+  const blob=new Blob([JSON.stringify(getState(),null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='fc-mobile-ovr.json';a.click();URL.revokeObjectURL(a.href);
+};
+gid('btnImport').onclick=()=>gid('fileInput').click();
+gid('fileInput').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{try{apply(JSON.parse(rd.result));}catch{alert('File JSON không hợp lệ');}};
+  rd.readAsText(f);e.target.value='';
+};
+gid('btnReset').onclick=()=>{
+  if(!confirm('Xoá dữ liệu và về mặc định?'))return;
+  localStorage.removeItem(KEY);buildMain();buildRes();buildBadge();render();
+};
+
+buildMain();buildRes();buildBadge();render();
 </script>
 </body>
 </html>
